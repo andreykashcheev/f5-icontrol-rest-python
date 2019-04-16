@@ -26,8 +26,45 @@ script:
   - if [[ $TRAVIS_PYTHON_VERSION == 2.7 ]]; then ${DIST_REPO}/scripts/package.sh "ubuntu" "14.04"; fi
   - if [[ $TRAVIS_PYTHON_VERSION == 2.7 ]]; then sudo chown -R travis:travis ${DIST_REPO}/rpms/build; fi
   - if [[ $TRAVIS_PYTHON_VERSION == 2.7 ]]; then sudo chown  travis:travis ${DIST_REPO}/deb_dist/*.deb; fi
+
+after_success:
+  - make docker-html
+
 before_deploy: PKG_VERSION=$(python -c "import icontrol; print(icontrol.__version__)")
 deploy:
+  # DEPLOY TO TEST
+  - provider: s3
+    skip_cleanup: true
+    access_key_id: $AWS_ACCESS_KEY_ID
+    secret_access_key: $AWS_SECRET_ACCESS_KEY
+    bucket: $AWS_S3_TEST_BUCKET
+    local_dir: docs/_build/html
+    upload_dir: f5-icontrol-rest-python-test/latest
+    on:
+      all_branches: true
+      repo: andreykashcheev/f5-icontrol-rest-python
+  # DEPLOY TO STAGING
+  - provider: s3
+    skip_cleanup: true
+    access_key_id: $AWS_ACCESS_KEY_ID
+    secret_access_key: $AWS_SECRET_ACCESS_KEY
+    bucket: $AWS_S3_STAGE_BUCKET
+    local_dir: docs/_build/html
+    upload_dir: f5-icontrol-rest-python-stage/latest
+    on:
+      all_branches: true
+      repo: andreykashcheev/f5-icontrol-rest-python
+  # DEPLOY TO PRODUCTION
+  - provider: s3
+    skip_cleanup: true
+    access_key_id: $AWS_ACCESS_KEY_ID
+    secret_access_key: $AWS_SECRET_ACCESS_KEY
+    bucket: $AWS_S3_PROD_BUCKET
+    local_dir: docs/_build/html
+    upload_dir: f5-icontrol-rest-python-prod/latest
+    on:
+      tags: true
+      repo: andreykashcheev/f5-icontrol-rest-python
   - provider: releases
     api_key:
       secure: Nc4NrVZqv5L0Ss8UQh0Glx8AKkL1NfClcvmOrg6kyj+jqnZYbqVbWN7Od8K9tp9pD613mQ86RL8vDV25wxEQY/Z0MidKuWqmM7PkriCe6ZXYhO2qB/jTouWr6ucv2xz4CZE2HRV3gJMKT6zFzKUZD2zUcojoIfzOM1KK2ggohEzkXXzpCtXFbVRB5B5WpMJ5+MQKBKGAUIF2RCiMiVRkqIfEg9dVziNNsSfXOjq5zelEIx3ePj/9/1OCrcjIpdp1SDc7soM79JDcmTyUkeUiczrZyXqw9972wI3zYDTAK/cDyPv/DzHF+N4jLOlI8j1lx8u/tgukAN98x2PqLhkxnezz1wGX17UDyQEvhCXs94+dhB20QulVfjCz+t2xaFozsC5z2C22ogRNIWtIg65x/Uj8YyO1AqNG8gmEYHErlQQGUcdyWhoApvAEF7BGFRZzlyWRBpxu3m4LKPRhahF1g3qOqVt3SHNG2uF4zJOJf+8MBG07A0QNhWCfre5sszsxUaiaePjUrABAgRijU2MPnOwaEzfnPoFH6j40CrpYhVQRn1v97e8Nk547gErIaAoATeJ4XDhAOXWj8qZrN9XBRtnu0AqVL59JtpeORAT5PWjM2bU5gUYk6CuBofdVOVo7qBWFL0nwu8hUneD5ur6t2v6TinktW4zheNNHQUFsH/4=
