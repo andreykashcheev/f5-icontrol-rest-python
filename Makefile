@@ -38,6 +38,15 @@ livehtml:
 	@echo ""
 	sphinx-autobuild --host 0.0.0.0 -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html
 
+
+
+.PHONY: linkcheck
+linkcheck:
+	$(SPHINXBUILD) -b linkcheck $(ALLSPHINXOPTS) $(BUILDDIR)/linkcheck
+	@echo
+	@echo "Link check complete; look for any errors in the above output " \
+	      "or in $(BUILDDIR)/linkcheck/output.txt."
+
 # Build live preview docs in a docker container
 .PHONY: docker-preview
 docker-preview:
