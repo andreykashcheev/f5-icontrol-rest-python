@@ -81,5 +81,5 @@ limitations under the License.
 
 Contributor License Agreement
 +++++++++++++++++++++++++++++
-Individuals or business entities who contribute to this project must have completed and submitted the `F5® Contributor License Agreement <http://f5-openstack-docs.readthedocs.org/en/latest/cla_landing.html>`_ to Openstack_CLA@f5.com prior to their code submission being included in this project.
+Individuals or business entities who contribute to this project must have completed and submitted the `F5® Contributor License Agreement <https://clouddocs.f5.com/cloud/openstack/v1/support/cla_landing.html>`_ to Openstack_CLA@f5.com prior to their code submission being included in this project.
 
